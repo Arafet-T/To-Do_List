@@ -17,7 +17,7 @@ A custom Odoo 19 module for managing tasks through a simple and organized To-Do 
   - Assigned User
   - Status
   - Due Date
-
+- Chatter
 ---
 
 ## Technologies
