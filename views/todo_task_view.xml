@@ -1,0 +1,84 @@
+<odoo>
+<!--Search View-->
+    <record id="todo_task_search_view" model="ir.ui.view">
+        <field name="name">todo task search view</field>
+        <field name="model">todo.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="task_name"/>
+                <field name="assign_to"/>
+
+                <filter name="new_tasks_filter" string="New Tasks" domain="[('status', '=', 'new')]"/>
+                <filter name="in_progress_tasks_filter" string="In Progress Tasks" domain="[('status', '=', 'in_progress')]"/>
+                <filter name="completed_tasks_filter" string="Completed Tasks" domain="[('status', '=', 'completed')]"/>
+
+                <filter name="group_assign_to" string="Assign To" context="{'group_by' : 'assign_to'}"/>
+                <filter name="group_status" string="Status" context="{'group_by' : 'status'}"/>
+                <filter name="group_due_date" string="Due Date" context="{'group_by' : 'due_date'}"/>
+
+            </search>
+        </field>
+    </record>
+
+<!--Form View-->
+    <record id="todo_task_form_view" model="ir.ui.view">
+        <field name="name">todo task form view</field>
+        <field name="model">todo.task</field>
+        <field name="arch" type="xml">
+            <form delete="0">
+                <sheet>
+                    <header>
+                        <button name="action_in_progress" type="object" class="btn-secondary" string="In Progress" invisible="status in ('in_progress', 'completed')"/>
+                        <button name="action_completed" type="object" class="btn-success" string="Completed" invisible="status in ('new', 'completed')"/>
+
+                        <field name="status" widget="statusbar"/>
+                    </header>
+                    <div class = "oe_title">
+                        <label for = "task_name"/>
+                        <h1>
+                            <field name="task_name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="assign_to"/>
+                        <field name="description"/>
+                        <field name="due_date" required="True" options="{'min_date': 'today'}"/>
+                    </group>
+                </sheet>
+                <chatter class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+<!--List View-->
+    <record id="todo_task_list_view" model="ir.ui.view">
+        <field name="name">todo task list view</field>
+        <field name="model">todo.task</field>
+        <field name="arch" type="xml">
+            <list class="header_style">
+                <field name="task_name"/>
+                <field name="assign_to"/>
+                <field name="description"/>
+                <field name="due_date"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="all_tasks_action" model="ir.actions.act_window">
+        <field name="name">All Tasks</field>
+        <field name="res_model">todo.task</field>
+    </record>
+
+<!--    dropdown list item-->
+    <menuitem
+            id="all_tasks_menu_item"
+            name="All Tasks"
+            parent="todo_root_menu"
+            action="all_tasks_action"
+    />
+</odoo>
