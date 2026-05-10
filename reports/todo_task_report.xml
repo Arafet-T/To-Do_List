@@ -1,0 +1,216 @@
+<odoo>
+    <record id="todo_task_report" model="ir.actions.report">
+        <field name="name">To Do Task Report</field>
+        <field name="model">todo.task</field>
+        <field name="report_type">qweb-html</field>
+        <field name="binding_model_id" ref="model_todo_task"/>
+        <field name="binding_type">report</field>
+        <field name="report_name">todo_management.todo_task_report_template</field>
+    </record>
+
+    <template id="todo_task_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <style>
+                        .custom-report-page {
+                            padding: 0;
+                            font-family: Arial, sans-serif;
+                            color: #222;
+                        }
+
+                        /* =========================
+                           BODY
+                        ========================= */
+
+                        .report-body {
+                            padding: 20px;
+                        }
+
+                        .task-section {
+                            border: 2px solid #6e7f99;
+                            padding: 30px;
+                        }
+
+                        /* TASK INFO */
+
+                        .task-info-table {
+                            width: 100%;
+                            margin-bottom: 30px;
+                            border-collapse: collapse;
+                        }
+
+                        .task-info-table td {
+                            padding: 4px 0;
+                            vertical-align: top;
+                            font-size: 18px;
+                        }
+
+                        .task-info-table .label {
+                            width: 220px;
+                            font-weight: bold;
+                        }
+
+                        /* DESCRIPTION */
+
+                        .description-section {
+                            margin-bottom: 35px;
+                        }
+
+                        .description-title {
+                            font-size: 20px;
+                            font-weight: bold;
+                            margin-bottom: 10px;
+                        }
+
+                        .description-content {
+                            font-size: 18px;
+                            line-height: 1.6;
+                        }
+
+                        /* =========================
+                           TIMESHEET
+                        ========================= */
+
+                        .timesheet-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }
+
+                        .timesheet-table th,
+                        .timesheet-table td {
+                            border: 1px solid #8aa0c8;
+                            padding: 10px;
+                            font-size: 16px;
+                        }
+
+                        .timesheet-title {
+                            text-align: center;
+                            font-size: 20px;
+                            font-weight: bold;
+                            background: #f7f7f7;
+                        }
+
+                        .timesheet-table thead tr:nth-child(2) th {
+                            font-weight: bold;
+                            text-align: center;
+                        }
+
+                        .timesheet-table td {
+                            text-align: center;
+                        }
+
+                        .timesheet-table td:nth-child(3) {
+                            text-align: left;
+                        }
+
+                        .total-row td {
+                            font-size: 18px;
+                            font-weight: bold;
+                        }
+                    </style>
+
+                    <div class="page custom-report-page">
+                        <!-- BODY -->
+                        <div class="report-body">
+
+                            <!-- TASK DETAILS -->
+                            <div class="task-section">
+
+                                <table class="task-info-table">
+                                    <tr>
+                                        <td class="label">TASK:</td>
+                                        <td>
+                                            <span t-field="doc.task_name"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="label">Due Date:</td>
+                                        <td>
+                                            <span t-field="doc.due_date"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="label">Assign To:</td>
+                                        <td>
+                                            <span t-field="doc.assign_to_id.name"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="label">Estimated Time:</td>
+                                        <td>
+                                            <span t-field="doc.estimated_time"/> H
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- DESCRIPTION -->
+                                <div class="description-section">
+                                    <div class="description-title">
+                                        Description:
+                                    </div>
+
+                                    <div class="description-content">
+                                        <span t-field="doc.description"/>
+                                    </div>
+                                </div>
+
+                                <!-- TIMESHEET -->
+                                <table class="timesheet-table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4" class="timesheet-title">
+                                                Timesheet
+                                            </th>
+                                        </tr>
+
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Time</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr t-foreach="doc.line_ids" t-as="line">
+                                            <td>
+                                                <span t-esc="line_index + 1"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="line.date"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="line.description"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="line.time"/> H
+                                            </td>
+                                        </tr>
+
+                                        <tr class="total-row">
+                                            <td colspan="3">
+                                                Total Time
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="doc.total_timesheet_time"/> h
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

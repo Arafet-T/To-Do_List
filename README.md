@@ -2,7 +2,11 @@
 
 A custom Odoo 19 module for managing tasks through a simple and organized To-Do system.
 
+---
+
 ## Features
+
+### Task Management
 
 - Create and manage tasks
 - Assign tasks to users
@@ -12,12 +16,51 @@ A custom Odoo 19 module for managing tasks through a simple and organized To-Do 
   - Completed
 - Add task descriptions
 - Set due dates
-- Search and filter tasks
-- Group tasks by:
-  - Assigned User
-  - Status
-  - Due Date
-- Chatter
+
+---
+
+## Advanced Features
+
+### Timesheet Management
+
+- Add an **Estimated Time** field to tasks
+- Record multiple timesheet lines related to a task
+- Track spent time on each task
+- Validation to ensure:
+  - Total recorded time does not exceed the estimated time
+
+### Archiving
+
+- Archive completed or unused tasks
+- Restore archived tasks when needed
+- Preserve task history safely
+
+### Server Actions
+
+A custom server action named **Close** allows users to:
+
+- Close one task
+- Close multiple tasks at once
+- Update task status directly from list view
+
+### Scheduled Actions (Cron Job)
+
+Automated scheduled actions are included to:
+
+- Detect overdue tasks based on the **Due Date**
+- Notify users about late tasks
+- Highlight overdue tasks in the tree/list view
+
+### Report Generation
+
+Users can print task reports directly from Odoo.
+
+Features:
+
+- Printable task reports
+- Clean report design
+- Export and print task information easily
+
 ---
 
 ## Technologies
@@ -41,6 +84,7 @@ Fields:
 - `description` → Task Description
 - `due_date` → Due Date
 - `status` → Task Status
+- `estimated_time` → Estimated Time
 
 ---
 
@@ -48,7 +92,7 @@ Fields:
 
 ### List View
 
-Displays all tasks with key information.
+Displays all tasks with their main information.
 
 ### Form View
 
@@ -56,6 +100,7 @@ Allows users to:
 
 - Create tasks
 - Edit tasks
+- Manage timesheet lines
 - Update task status
 
 ### Search View
@@ -77,7 +122,7 @@ Includes:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Arafet-T/your-repository.git
+git clone https://github.com/your-username/your-repository.git
 ```
 
 ### 2. Copy the module
@@ -93,10 +138,10 @@ python odoo-bin --addons-path=addons,custom_addons
 ### 4. Install the module
 
 - Activate Developer Mode
-- Go to **Apps**
+- Open **Apps**
 - Click **Update Apps List**
-- Search for the module 'To-Do List'
-- Click **Activate**
+- Search for the module
+- Click **Install**
 
 ---
 
@@ -106,15 +151,35 @@ python odoo-bin --addons-path=addons,custom_addons
 - PostgreSQL 18
 - Odoo 19
 
+
+---
+
+## Project Structure
+
+```text
+todo_management/
+│
+├── models/
+├── reports/
+├── security/
+├── static/
+├── views/
+├── __init__.py
+├── __manifest__.py
+└── README.md
+```
+
 ---
 
 ## Future Improvements
 
 - Email notifications
+- Telegram notifications
 - Kanban view
 - Task priorities
-- Activity reminders
 - Dashboard statistics
+- Real-time notifications
+- AI-based task reminders
 
 ---
 

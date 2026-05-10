@@ -6,13 +6,13 @@
         <field name="arch" type="xml">
             <search>
                 <field name="task_name"/>
-                <field name="assign_to"/>
+                <field name="assign_to_id"/>
 
                 <filter name="new_tasks_filter" string="New Tasks" domain="[('status', '=', 'new')]"/>
                 <filter name="in_progress_tasks_filter" string="In Progress Tasks" domain="[('status', '=', 'in_progress')]"/>
                 <filter name="completed_tasks_filter" string="Completed Tasks" domain="[('status', '=', 'completed')]"/>
 
-                <filter name="group_assign_to" string="Assign To" context="{'group_by' : 'assign_to'}"/>
+                <filter name="group_assign_to" string="Assign To" context="{'group_by' : 'assign_to_id'}"/>
                 <filter name="group_status" string="Status" context="{'group_by' : 'status'}"/>
                 <filter name="group_due_date" string="Due Date" context="{'group_by' : 'due_date'}"/>
 
@@ -28,8 +28,9 @@
             <form delete="0">
                 <sheet>
                     <header>
-                        <button name="action_in_progress" type="object" class="btn-secondary" string="In Progress" invisible="status in ('in_progress', 'completed')"/>
-                        <button name="action_completed" type="object" class="btn-success" string="Completed" invisible="status in ('new', 'completed')"/>
+                        <button name="action_new" type="object" class="btn-primary" string="Set to New" invisible="status in ('new', 'in_progress', 'completed')"/>
+                        <button name="action_in_progress" type="object" class="btn-secondary" string="In Progress" invisible="status in ('in_progress', 'completed', 'closed')"/>
+                        <button name="action_completed" type="object" class="btn-success" string="Completed" invisible="status in ('new', 'completed', 'closed')"/>
 
                         <field name="status" widget="statusbar"/>
                     </header>
@@ -40,10 +41,24 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="assign_to"/>
+                        <field name="assign_to_id"/>
                         <field name="description"/>
-                        <field name="due_date" required="True" options="{'min_date': 'today'}"/>
+                        <field name="due_date" required="True"/>
+                        <field name="active" invisible="status in ('new', 'in_progress')"/>
+                        <field name="estimated_time"/>
+                        <field name="total_timesheet_time"/>
                     </group>
+                    <notebook invisible="status in ('new', 'completed', 'closed')">
+                        <page string="Timesheet">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="date" required="True" options="{'max_date': 'today'}"/>
+                                    <field name="description"/>
+                                    <field name="time"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter class="oe_chatter">
                     <field name="message_follower_ids"/>
@@ -59,22 +74,45 @@
         <field name="name">todo task list view</field>
         <field name="model">todo.task</field>
         <field name="arch" type="xml">
-            <list class="header_style">
+            <list class="header_style" decoration-danger="(is_late)">
                 <field name="task_name"/>
-                <field name="assign_to"/>
+                <field name="assign_to_id"/>
                 <field name="description"/>
                 <field name="due_date"/>
+                <field name="estimated_time"/>
                 <field name="status"/>
+                <field name="active"/>
+                <field name="is_late"/>
             </list>
         </field>
     </record>
 
+<!--window Action-->
     <record id="all_tasks_action" model="ir.actions.act_window">
         <field name="name">All Tasks</field>
         <field name="res_model">todo.task</field>
     </record>
 
-<!--    dropdown list item-->
+<!--Server Action-->
+    <record id="todo_task_close_server_action" model="ir.actions.server">
+        <field name="name">Close</field>
+        <field name="model_id" ref="model_todo_task"/>
+        <field name="binding_model_id" ref="model_todo_task"/>
+        <field name="state">code</field>
+        <field name="code">action = records.server_action_closed()</field>
+    </record>
+
+<!--Automated Action (Cron Job)-->
+    <record id="todo_task_check_due_date_cron_action" model="ir.cron">
+        <field name="name">TodoTask: check due date</field>
+        <field name="model_id" ref="model_todo_task"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_action_check_due_date()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+
+<!--dropdown list item-->
     <menuitem
             id="all_tasks_menu_item"
             name="All Tasks"
