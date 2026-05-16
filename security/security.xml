@@ -1,0 +1,49 @@
+<odoo>
+<!--Category Productivity-->
+    <record id="productivity_category" model="ir.module.category">
+        <field name="name">Productivity</field>
+    </record>
+
+<!--ToDoApp Privilege-->
+    <record id="productivity_management_privilege" model="res.groups.privilege">
+        <field name="name">To-Do App Management</field>
+        <field name="category_id" ref="todo_management.productivity_category"/>
+    </record>
+
+<!--Group Managers-->
+    <record id="managers_group" model="res.groups">
+        <field name="name">To-Do App Managers Group</field>
+        <field name="privilege_id" ref="todo_management.productivity_management_privilege"/>
+    </record>
+
+<!--Group Users-->
+    <record id="users_group" model="res.groups">
+        <field name="name">To-Do App Users Group</field>
+        <field name="privilege_id" ref="todo_management.productivity_management_privilege"/>
+    </record>
+
+
+
+    <!--Record rule for users group-->
+    <record id="todo_task_users_group_record_rule" model="ir.rule">
+        <field name="name">ToDo Users group View assigned tasks only</field>
+        <field name="model_id" ref="todo_management.model_todo_task"/>
+        <field name="domain_force">[('assign_to_id', '=', user.partner_id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="groups" eval="[(4, ref('todo_management.users_group'))]"/>
+    </record>
+
+    <!--Record rule for updating records-->
+    <record id="todo_task_update_record_rule" model="ir.rule">
+        <field name="name">Task Update Restriction In Completed and Closed Status</field>
+        <field name="model_id" ref="todo_management.model_todo_task"/>
+        <field name="domain_force">[('status', 'in', ('new', 'in_progress'))]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>
