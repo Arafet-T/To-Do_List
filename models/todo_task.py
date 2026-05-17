@@ -11,7 +11,7 @@ class TodoTask(models.Model):
     #Fields
     task_name = fields.Char(string="Task Name", required=True, tracking=1, translate=True)
     description = fields.Text(string="Description")
-    due_date = fields.Date(string="Due Date", required=True)
+    due_date = fields.Date(string="Due Date")
     status = fields.Selection([
         ('new', 'New'),
         ('in_progress', 'In Progress'),
